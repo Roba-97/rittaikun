@@ -15,7 +15,7 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(20, 20, 20);
 
 // Renderer
-const renderer = new THREE.WebGLRenderer({ antilias: true});
+const renderer = new THREE.WebGLRenderer({ antialias: true});
 // HACK
 // アンチエイリアスを有効にするかどうかは要検討
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -33,7 +33,7 @@ controls.target.set(GRID_SIZE / 2, 0, GRID_SIZE / 2);
 // 環境光と並行光源
 const ambient = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(ambient);
-const direct = new THREE.DirectionalLignt(0xffffff, 0.8);
+const direct = new THREE.DirectionalLight(0xffffff, 0.8);
 direct.position.set(10, 30, 10);
 scene.add(direct);
 
@@ -63,5 +63,7 @@ renderer.setAnimationLoop(animate);
 window.addEventListener("resize", () => {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
+	// NOTE
+	// 内部に投影行列を持っている。
 	renderer.setSize(window.innerWidth, window.innerHeight);
 });

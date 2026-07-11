@@ -20,7 +20,7 @@ const SHAPES = {
 };
 
 let currentShape = "box"; // 今選ばれている形状
-let currentColor = 0xff6633; 
+let currentColor = 0xff6633;
 
 // Scene (Like 3D space)
 const scene = new THREE.Scene();
@@ -124,15 +124,21 @@ function onRightClick(event) {
 	removeVoxel(x, y, z);
 }
 
-function addVoxel(x, y, z) {
+function addVoxel(x, y, z, shape = currentShape, color = currentColor) {
 	const key = `${x},${y},${z}`;
 	if (voxels.has(key)) return; // すでに埋まっている場合
 
-	const geometry = SHAPES[currentShape]();
-	const material = new THREE.MeshLambertMaterial({ color: currentColor });
+	const geometry = SHAPES[shape]();
+	const material = new THREE.MeshLambertMaterial({ color: color });
 	const mesh = new THREE.Mesh(geometry, material);
 
 	mesh.position.set(x + 0.5, y + 0.5, z + 0.5);
+
+	mesh.userData = {
+    shape: shape,
+    color: color
+	};
+
 	scene.add(mesh);
 	voxels.set(key, mesh);
 }
@@ -216,3 +222,45 @@ colorPicker.addEventListener("input", () => {
 	// Char -> Num
 	currentColor = parseInt(colorPicker.value.slice(1), 16);
 });
+
+// JSON形式で図形情報の出力
+function exportToJSON() {
+  const designData = [];
+
+  // voxelsの中身をループ処理
+  voxels.forEach((mesh, key) => {
+    // keyは "x,y,z" の文字列なので、カンマで分割して数値に戻す
+    const coords = key.split(',').map(Number);
+    designData.push({
+      x: coords[0],
+      y: coords[1],
+      z: coords[2],
+      shape: mesh.userData.shape, // メモしておいた形状名
+      color: mesh.userData.color  // メモしておいた色（数値）
+    });
+  });
+
+  // 配列をJSON文字列に変換（これをSupabaseに送信する！）
+	const jsonString = JSON.stringify(designData);
+	console.log(jsonString);
+  return jsonString;
+}
+
+function buildFromJSON(jsonString) {
+  // 現在のキャンバスをリセット
+  voxels.forEach((mesh, key) => {
+    scene.remove(mesh);
+    mesh.geometry.dispose();
+    mesh.material.dispose();
+  });
+  voxels.clear();
+
+  // 文字列からJavaScriptの配列に戻す
+  const designData = JSON.parse(jsonString);
+
+  // 配列のデータを使い再配置
+  designData.forEach(item => {
+    // addVoxel関数にすべてのパラメータを渡す
+    addVoxel(item.x, item.y, item.z, item.shape, item.color);
+  });
+}

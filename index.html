@@ -5,62 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>立体くん - エントランス</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/index.css">
   </head>
   <body>
-    <div class="d-flex justify-content-center align-items-center vh-100">
-      <div class="text-center p-5">
-        <h1 class="display-5 fw-bold mb-5 text-dark">
+    <div class="bg-body d-flex justify-content-center align-items-center">
+      <div class="d-flex flex-column justify-content-center align-items-center p-5 glass-panel text-center">
+        <h1 class="display-5 fw-bold text-white mb-5">
           みたかAI！<br>
           これが人類の感性と美的センスだ！展
         </h1>
-        <div class="d-flex justify-content-center gap-3">
-          <button
-            type="button"
-            class="btn btn-primary btn-lg px-4"
-            data-bs-toggle="modal"
-            data-bs-target="#pamphletModal"
-          >
-            パンフレットを見る
+        <div class="d-grid gap-4 mx-auto">
+          <button type="button" class="btn brochure-btn btn-lg px-5 py-3 rounded-pill d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#pamphletModal">
+            <i class="bi bi-book"></i>パンフレットを見る
           </button>
-
-          <a href="./pages/gallery.html" class="btn btn-outline-primary btn-lg px-4">
+          <a href="./pages/gallery.html" class="btn entry-btn btn-lg px-5 py-3 rounded-pill">
             展示会に行く
           </a>
         </div>
       </div>
     </div>
 
-    <div
-      class="modal fade"
-      id="pamphletModal"
-      tabindex="-1"
-      aria-labelledby="pamphletModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="pamphletModalLabel">パンフレット</h5>
-            <button
-              type="button"
-              class="btn-close btn-close-white"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body text-start">
-            <p class="lead">
-              展示会場パンフレット
-            </p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              読んだ
-            </button>
+    <div class="modal fade" id="pamphletModal" tabindex="-1" aria-labelledby="pamphletModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered custom-brochure-modal">
+        <div class="modal-content border-0 rounded-0 bg-white shadow-lg p-4 p-md-5">
+          <div class="modal-body text-center p-0">
+            <div class="text-uppercase tracking-widest text-muted small mb-2">- Exhibition Guide -</div>
+            <h2 class="fw-bold text-dark mb-4" id="pamphletModalLabel" style="letter-spacing: 1px; font-size: 1.75rem;">
+              展覧会パンフレット
+            </h2>
+            <hr class="mx-auto my-4 opacity-25" style="width: 50px; border-top: 2px solid #000;">
+            <div class="text-start text-secondary lh-lg fs-6 mx-auto" style="max-width: 90%;">
+              <p class="mb-4 fw-bold text-dark text-center">
+                「みたかAI！これが人類の感性と美的センスだ！展」へようこそ。
+              </p>
+              <p class="mb-3">
+                本展覧会は、人工知能（AI）に対して、人類が持つ独自の創造性、感性、そして美的センスを証明するために企画された3Dアートギャラリーです。
+              </p>
+              <p class="mb-4">
+                会場内では、直感的な操作で生み出された多様な立体オブジェクトを鑑賞・再編集することができます。あなたの感性が、AIの予測を超える新しい美の形を紡ぎ出します。
+              </p>
+              <div class="p-3 border border-light bg-light rounded-3 small text-muted mb-4">
+                <span class="fw-bold text-dark">❖ 鑑賞のポイント</span><br>
+                作品をクリックすると詳細ページへ遷移し、3Dモデルを自由に回転させて様々な角度から美的センスを堪能できます。
+              </div>
+            </div>
+            <div class="mt-5">
+              <button type="button" class="btn btn-dark rounded-pill px-5 py-2 fw-medium tracking-widest text-uppercase"
+                data-bs-dismiss="modal"
+                style="letter-spacing: 2px; font-size: 0.9rem; background-color: #6366f1; border-color: #6366f1;">
+                読んだ
+              </button>
+            </div>
           </div>
         </div>
       </div>

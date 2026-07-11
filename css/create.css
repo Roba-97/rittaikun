@@ -13,6 +13,13 @@ body {
 	z-index: 10; /* 3D画面より手前に描画 */
 }
 
+#submit-form {
+	position: fixed; /* 画面に対して固定配置 */
+	bottom: 10px;
+	left: 10px;
+	z-index: 10; /* 3D画面より手前に描画 */
+}
+
 .shape-btn {
 	padding: 8px 12px;
 	border: 1px solid #999;

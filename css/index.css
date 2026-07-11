@@ -1,0 +1,56 @@
+.bg-body {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100vh;
+  background-image: url('../img/entrance.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.bg-body::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #000000;
+  opacity: 0.20;
+}
+
+.bg-body > * {
+  position: relative;
+  z-index: 3;
+  opacity: 1;
+}
+
+.glass-panel {
+  /* ほんのわずかな白 */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* 背景をすりガラスのようにぼかす */
+  backdrop-filter: blur(8px);
+  /* Safari対応 */
+  -webkit-backdrop-filter: blur(8px);
+  /* 境界を際立たせる極細の白い枠 */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  /* rounded-5より少しシャープな角丸 */
+  border-radius: 1rem;
+}
+
+.brochure-btn, .entry-btn {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(4px);
+  /* ボタン自体も少しぼかす */
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+}
+.brochure-btn:hover, .entry-btn:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #000000;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.6);
+}

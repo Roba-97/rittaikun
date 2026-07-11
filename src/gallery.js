@@ -5,21 +5,27 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const galleryContainer = document.getElementById('gallery-container');
-const loadMoreBtn = document.getElementById('load-more-btn');
+const loadingSentinel = document.getElementById('loading-sentinel');
+const loadingSpinner = document.getElementById('loading-spinner');
 
 // 取得状態を管理する変数
 let currentIndex = 0;
 const fetchCount = 8;
+let isLoading = false; // 重複して通信しないためのロック用フラグ
+let hasMoreData = true; // まだDBにデータが残っているかのフラグ
 
 // データを取得する非同期関数
 async function fetchGalleries() {
-  try {
-    // ボタンを一時的に無効化して連打を防ぐ
-    if (loadMoreBtn) {
-      loadMoreBtn.disabled = true;
-      loadMoreBtn.textContent = '読み込み中...';
-    }
+  // すでに読み込み中、またはこれ以上データが無い場合は処理をストップ
+  if (isLoading || !hasMoreData) return;
 
+  // ロックをかけて読み込み中状態にする
+  isLoading = true;
+  if (loadingSpinner) {
+    loadingSpinner.style.display = 'inline-block'; // スピナーを表示
+  }
+
+  try {
     // range(開始位置, 終了位置) で取得するデータの範囲を指定
     const { data, error } = await supabase
       .from('objects')
@@ -51,24 +57,40 @@ async function fetchGalleries() {
 
     // 今回取得したデータが要求した件数(8件)より少なければ、全データ読み込み完了と判断
     if (data.length < fetchCount) {
-      if (loadMoreBtn) {
-        loadMoreBtn.style.display = 'none'; // ボタンを非表示にする
-      }
-    } else {
-      // まだ続きがある場合はボタンを元の状態に戻す
-      if (loadMoreBtn) {
-        loadMoreBtn.disabled = false;
-        loadMoreBtn.textContent = 'もっと見る';
-      }
+      hasMoreData = false;
     }
   } catch (err) {
-      console.error("予期せぬエラーが発生しました:", err);
+    console.error("予期せぬエラーが発生しました:", err);
+  } finally {
+    // 処理が終わったらロックを解除し、スピナーを隠す
+    isLoading = false;
+    if (loadingSpinner) {
+      loadingSpinner.style.display = 'none';
+    }
   }
 }
 
-// ページ読み込み時にデータ取得を実行
-fetchGalleries();
 
-if (loadMoreBtn) {
-  loadMoreBtn.addEventListener('click', fetchGalleries);
-}
+// 無限スクロール（Intersection Observer）の実装
+const observerOptions = {
+  root: null,
+  rootMargin: '100px', // 画面の下端から100px手前に来たら早めに読み込みを開始する
+  threshold: 0
+};
+
+const observer = new IntersectionObserver((entries) => {
+  // 監視対象（loadingSentinel）が画面に入ったらデータを取得
+  if (entries[0].isIntersecting) {
+    fetchGalleries();
+  }
+}, observerOptions);
+
+document.addEventListener('DOMContentLoaded', () => {
+  // 監視を開始
+  if (loadingSentinel) {
+    observer.observe(loadingSentinel);
+  }
+
+  // 初回読み込みを実行
+  fetchGalleries();
+});

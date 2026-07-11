@@ -20,8 +20,10 @@
     </header>
     <div class="container mb-5">
       <div id="gallery-container" class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3"></div>
-      <div class="text-center mt-4">
-        <button id="load-more-btn" class="btn btn-secondary">もっと見る</button>
+      <div id="loading-sentinel" class="text-center mt-5 mb-5">
+        <div id="loading-spinner" class="spinner-border text-secondary" role="status" style="display: none;">
+          <span class="visually-hidden">読み込み中...</span>
+        </div>
       </div>
     </div>
   </div>

@@ -1,0 +1,25 @@
+{
+  "name": "rittaikun",
+  "version": "1.0.0",
+  "description": "",
+  "main": "vite.config.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Roba-97/rittaikun.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Roba-97/rittaikun/issues"
+  },
+  "homepage": "https://github.com/Roba-97/rittaikun#readme",
+  "devDependencies": {
+    "vite": "^8.1.4"
+  }
+}

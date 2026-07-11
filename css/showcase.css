@@ -1,0 +1,5 @@
+#canvas-container {
+  height: 70vh;
+  background-color: #e9ecef;
+  /* キャンバスが埋め込まれるまでの仮の背景色 */
+}

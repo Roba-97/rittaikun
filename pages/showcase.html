@@ -4,9 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>立体くん - ショーケース</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/showcase.css">
 </head>
 <body>
-  <img src="https://placehold.jp/300x300.png"/>
-  <a href="./gallery.html">ギャラリールームへ</a>
+  <main class="container my-5">
+    <div id="canvas-container" class="w-100 mb-4 overflow-hidden position-relative">
+      <canvas id="three-canvas" class="w-100 h-100 d-block"></canvas>
+    </div>
+    <div class="px-2">
+      <h2 id="work-title" class="fw-bold mb-2">作品名</h2>
+      <p class="text-muted">
+        By <span id="work-author">作者名 (または匿名)</span>
+      </p>
+    </div>
+    <a href="./gallery.html">ギャラリールームへ</a>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

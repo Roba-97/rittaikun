@@ -61,7 +61,7 @@ const voxels = new Map();
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
-function onClick(event) {
+function pickObject(event) {
 	// screen point -> normalized point
 	pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
 	pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -71,10 +71,12 @@ function onClick(event) {
 	// judgement target
 	const targets = [floor, ...voxels.values()];
 	const hits = raycaster.intersectObjects(targets);
-	if (hits.length === 0) return; // No hits
+	return hits.length > 0 ? hits[0] : null;
+}
 
-	const hit = hits[0]; // first hit
-
+function onClick(event) {
+	const hit = pickObject(event);
+	if (!hit) return;
 	// ヒットした面の法線方向に半マスずらすと，置くべきマスの内部の点になる。
 	// NOTE
 	// 浮動小数点誤差の問題を解決するために行う。
@@ -90,6 +92,31 @@ function onClick(event) {
 	addVoxel(x, y, z);
 }
 
+function onRightClick(event) {
+	const hit = pickObject(event);
+	if (!hit) return;
+	if (hit.object === floor) return;
+
+	const p = hit.point.clone().add(hit.face.normal.clone().multiplyScalar(-0.5));
+
+	const x = Math.floor(p.x);
+	const y = Math.floor(p.y);
+	const z = Math.floor(p.z);
+
+	removeVoxel(x, y, z);
+}
+
+function removeVoxel(x, y, z) {
+	const key = `${x},${y},${z}`;
+	const mesh = voxels.get(key);
+	if (!mesh) return;
+
+	scene.remove(mesh);
+	mesh.geometry.dispose();
+	mesh.material.dispose();
+	voxels.delete(key);
+}
+
 function addVoxel(x, y, z) {
 	const key = `${x},${y},${z}`;
 	if (voxels.has(key)) return; // すでに埋まっている場合
@@ -103,7 +130,24 @@ function addVoxel(x, y, z) {
 	voxels.set(key, mesh);
 }
 
-window.addEventListener("click", onClick);
+// Distinction between drag and click.
+let downX = 0, downY = 0;
+
+window.addEventListener("pointerdown", (e) => {
+	downX = e.clientX;
+	downY = e.clientY;
+});
+
+window.addEventListener("pointerup", (e) => {
+	const moved = Math.abs(e.clientX - downX) + Math.abs(e.clientY - downY);
+	if (moved > 5) return;
+
+	if (e.button === 0) onClick(e); // left button
+	else if (e.button === 2) onRightClick(e); // right button
+});
+
+// 右クリックで出るブラウザ標準メニューを止める
+window.addEventListener("contextmenu", (e) => e.preventDefault());
 
 function animate() {
 	controls.update();

@@ -1,12 +1,74 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>立体くん</title>
-</head>
-<body>
-  <h1>エントランス</h1>
-  <a href="/gallery.html">ギャラリールームへ</a>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>立体くん - エントランス</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="d-flex justify-content-center align-items-center vh-100">
+      <div class="text-center p-5">
+        <h1 class="display-5 fw-bold mb-5 text-dark">
+          みたかAI！<br>
+          これが人類の感性と美的センスだ！展
+        </h1>
+        <div class="d-flex justify-content-center gap-3">
+          <button
+            type="button"
+            class="btn btn-primary btn-lg px-4"
+            data-bs-toggle="modal"
+            data-bs-target="#pamphletModal"
+          >
+            パンフレットを見る
+          </button>
+
+          <a href="./gallery.html" class="btn btn-outline-primary btn-lg px-4">
+            展示会に行く
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="pamphletModal"
+      tabindex="-1"
+      aria-labelledby="pamphletModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="pamphletModalLabel">パンフレット</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body text-start">
+            <p class="lead">
+              展示会場パンフレット
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              読んだ
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

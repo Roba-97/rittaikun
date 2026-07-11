@@ -87,7 +87,7 @@ function pickObject(event) {
 	raycaster.setFromCamera(pointer, camera);
 
 	// judgement target
-	const targets = [floor, ...voxels.values()];
+	const targets = [floor, ...[...voxels.values()].map((v) => v.mesh)];
 	const hits = raycaster.intersectObjects(targets);
 	return hits.length > 0 ? hits[0] : null;
 }
@@ -129,28 +129,28 @@ function addVoxel(x, y, z, shape = currentShape, color = currentColor) {
 	if (voxels.has(key)) return; // すでに埋まっている場合
 
 	const geometry = SHAPES[shape]();
-	const material = new THREE.MeshLambertMaterial({ color: color });
+	const material = new THREE.MeshLambertMaterial({ color });
 	const mesh = new THREE.Mesh(geometry, material);
 
 	mesh.position.set(x + 0.5, y + 0.5, z + 0.5);
 
-	mesh.userData = {
-    shape: shape,
-    color: color
-	};
+	// mesh.userData = {
+    // shape: shape,
+    // color: color
+	// };
 
 	scene.add(mesh);
-	voxels.set(key, mesh);
+	voxels.set(key, { mesh, shape, color });
 }
 
 function removeVoxel(x, y, z) {
 	const key = `${x},${y},${z}`;
-	const mesh = voxels.get(key);
-	if (!mesh) return;
+	const v = voxels.get(key);
+	if (!v) return;
 
-	scene.remove(mesh);
-	mesh.geometry.dispose();
-	mesh.material.dispose();
+	scene.remove(v.mesh);
+	v.mesh.geometry.dispose();
+	v.mesh.material.dispose();
 	voxels.delete(key);
 }
 
@@ -210,6 +210,7 @@ shapeButtons.forEach((btn) => {
 	});
 });
 
+
 // Initial Setting
 document.querySelector('[data-shape="box"]').classList.add("selected");
 
@@ -224,19 +225,19 @@ colorPicker.addEventListener("input", () => {
 });
 
 // JSON形式で図形情報の出力
-function exportToJSON() {
+export function exportToJSON() {
   const designData = [];
 
   // voxelsの中身をループ処理
-  voxels.forEach((mesh, key) => {
+  voxels.forEach((v, key) => {
     // keyは "x,y,z" の文字列なので、カンマで分割して数値に戻す
-    const coords = key.split(',').map(Number);
+	const [x, y, z] = key.split(",").map(Number);
     designData.push({
-      x: coords[0],
-      y: coords[1],
-      z: coords[2],
-      shape: mesh.userData.shape, // メモしておいた形状名
-      color: mesh.userData.color  // メモしておいた色（数値）
+	  x: x,
+	  y: y,
+	  z: z,
+      shape: v.shape, // メモしておいた形状名
+      color: v.color  // メモしておいた色（数値）
     });
   });
 
@@ -248,10 +249,10 @@ function exportToJSON() {
 
 function buildFromJSON(jsonString) {
   // 現在のキャンバスをリセット
-  voxels.forEach((mesh, key) => {
-    scene.remove(mesh);
-    mesh.geometry.dispose();
-    mesh.material.dispose();
+  voxels.forEach((v, key) => {
+    scene.remove(v.mesh);
+    v.mesh.geometry.dispose();
+    v.mesh.material.dispose();
   });
   voxels.clear();
 

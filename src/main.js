@@ -20,6 +20,7 @@ const SHAPES = {
 };
 
 let currentShape = "box"; // 今選ばれている形状
+let currentColor = 0xff6633; 
 
 // Scene (Like 3D space)
 const scene = new THREE.Scene();
@@ -128,7 +129,7 @@ function addVoxel(x, y, z) {
 	if (voxels.has(key)) return; // すでに埋まっている場合
 
 	const geometry = SHAPES[currentShape]();
-	const material = new THREE.MeshLambertMaterial({ color: 0xff6633 });
+	const material = new THREE.MeshLambertMaterial({ color: currentColor });
 	const mesh = new THREE.Mesh(geometry, material);
 
 	mesh.position.set(x + 0.5, y + 0.5, z + 0.5);
@@ -205,3 +206,13 @@ shapeButtons.forEach((btn) => {
 
 // Initial Setting
 document.querySelector('[data-shape="box"]').classList.add("selected");
+
+// Color picker process
+const colorPicker = document.querySelector("#color-picker");
+
+// NOTE
+// colorPickerはinput or changeがある。
+colorPicker.addEventListener("input", () => {
+	// Char -> Num
+	currentColor = parseInt(colorPicker.value.slice(1), 16);
+});

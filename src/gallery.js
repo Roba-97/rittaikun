@@ -99,10 +99,10 @@ async function fetchGalleries() {
       const colDiv = document.createElement('div');
       colDiv.className = 'col';
       colDiv.innerHTML = `
-        <div class="card rounded-0 border-0 h-100">
-          <div id="preview-${item.id}" class="w-100 ratio ratio-1x1"></div>
-          <div class="card-body">
-            <a href="./showcase.html?id=${item.id}" class="text-decoration-none">${item.title || '無題'}</a>
+        <div class="card rounded-0 border-0 h-100 bg-opacity-75 preview-glass-panel">
+          <div id="preview-${item.id}" class="w-100 preview-ratio"></div>
+          <div class="card-body text-center">
+            <a href="./showcase.html?id=${item.id}" class="text-decoration-none text-secondary fw-bold fs-4">${item.title || '無題'}</a>
           </div>
         </div>
       `;

@@ -23,7 +23,7 @@ async function fetchGalleries() {
     // range(開始位置, 終了位置) で取得するデータの範囲を指定
     const { data, error } = await supabase
       .from('objects')
-      .select('*')
+      .select('id', 'title', 'author_name', 'thumbnail_url', 'created_at')
       .order('created_at', { ascending: false })
       .range(currentIndex, currentIndex + fetchCount - 1);
 

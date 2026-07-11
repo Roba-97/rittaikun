@@ -20,7 +20,7 @@ const SHAPES = {
 };
 
 let currentShape = "box"; // 今選ばれている形状
-let currentColor = 0xff6633; 
+let currentColor = 0xff6633;
 
 // Scene (Like 3D space)
 const scene = new THREE.Scene();
@@ -87,7 +87,7 @@ function pickObject(event) {
 	raycaster.setFromCamera(pointer, camera);
 
 	// judgement target
-	const targets = [floor, ...voxels.values()];
+	const targets = [floor, ...[...voxels.values()].map((v) => v.mesh)];
 	const hits = raycaster.intersectObjects(targets);
 	return hits.length > 0 ? hits[0] : null;
 }
@@ -124,27 +124,33 @@ function onRightClick(event) {
 	removeVoxel(x, y, z);
 }
 
-function addVoxel(x, y, z) {
+function addVoxel(x, y, z, shape = currentShape, color = currentColor) {
 	const key = `${x},${y},${z}`;
 	if (voxels.has(key)) return; // すでに埋まっている場合
 
-	const geometry = SHAPES[currentShape]();
-	const material = new THREE.MeshLambertMaterial({ color: currentColor });
+	const geometry = SHAPES[shape]();
+	const material = new THREE.MeshLambertMaterial({ color });
 	const mesh = new THREE.Mesh(geometry, material);
 
 	mesh.position.set(x + 0.5, y + 0.5, z + 0.5);
+
+	// mesh.userData = {
+    // shape: shape,
+    // color: color
+	// };
+
 	scene.add(mesh);
-	voxels.set(key, mesh);
+	voxels.set(key, { mesh, shape, color });
 }
 
 function removeVoxel(x, y, z) {
 	const key = `${x},${y},${z}`;
-	const mesh = voxels.get(key);
-	if (!mesh) return;
+	const v = voxels.get(key);
+	if (!v) return;
 
-	scene.remove(mesh);
-	mesh.geometry.dispose();
-	mesh.material.dispose();
+	scene.remove(v.mesh);
+	v.mesh.geometry.dispose();
+	v.mesh.material.dispose();
 	voxels.delete(key);
 }
 
@@ -204,6 +210,7 @@ shapeButtons.forEach((btn) => {
 	});
 });
 
+
 // Initial Setting
 document.querySelector('[data-shape="box"]').classList.add("selected");
 
@@ -216,3 +223,45 @@ colorPicker.addEventListener("input", () => {
 	// Char -> Num
 	currentColor = parseInt(colorPicker.value.slice(1), 16);
 });
+
+// JSON形式で図形情報の出力
+export function exportToJSON() {
+  const designData = [];
+
+  // voxelsの中身をループ処理
+  voxels.forEach((v, key) => {
+    // keyは "x,y,z" の文字列なので、カンマで分割して数値に戻す
+	const [x, y, z] = key.split(",").map(Number);
+    designData.push({
+	  x: x,
+	  y: y,
+	  z: z,
+      shape: v.shape, // メモしておいた形状名
+      color: v.color  // メモしておいた色（数値）
+    });
+  });
+
+  // 配列をJSON文字列に変換（これをSupabaseに送信する！）
+	const jsonString = JSON.stringify(designData);
+	console.log(jsonString);
+  return jsonString;
+}
+
+function buildFromJSON(jsonString) {
+  // 現在のキャンバスをリセット
+  voxels.forEach((v, key) => {
+    scene.remove(v.mesh);
+    v.mesh.geometry.dispose();
+    v.mesh.material.dispose();
+  });
+  voxels.clear();
+
+  // 文字列からJavaScriptの配列に戻す
+  const designData = JSON.parse(jsonString);
+
+  // 配列のデータを使い再配置
+  designData.forEach(item => {
+    // addVoxel関数にすべてのパラメータを渡す
+    addVoxel(item.x, item.y, item.z, item.shape, item.color);
+  });
+}

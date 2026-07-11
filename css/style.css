@@ -2,3 +2,37 @@ body {
 	margin: 0;
 	overflow: hidden;
 }
+
+#toolbar {
+	position: fixed; /* 画面に対して固定配置 */
+	top: 10px;
+	left: 10px;
+	display: flex; /* 子要素を横に並べる */
+	gap: 6px; /* ボタン間の隙間 */
+	flex-wrap: wrap; /* 画面が狭ければ折り返す */
+	z-index: 10; /* 3D画面より手前に描画 */
+}
+
+.shape-btn {
+	padding: 8px 12px;
+	border: 1px solid #999;
+	border-radius: 6px;
+	background: #fff;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.shape-btn.selected {
+	background: #ff6633;
+	color: #fff;
+	border-color: #ff6633;
+}
+
+#color-picker {
+	width: 40px;
+	height: 36px;
+	padding: 0;
+	border: 1px solid #999;
+	border-radius: 6px;
+	cursor: pointer;
+}

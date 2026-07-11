@@ -36,3 +36,36 @@
   color: #000000;
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.6);
 }
+
+/* 縦長い冊子（パンフレット）風のモーダル制御 */
+.custom-brochure-modal {
+  max-width: 30vw;
+  max-height: 75vh;
+  overflow-y: scroll;
+}
+
+.custom-brochure-modal .modal-content {
+  border-radius: 1.25rem;
+  /* 枠の決定したテイスト（角丸具合）に合わせて調整してください */
+  min-height: 580px;
+  /* 縦の最小高さを確保して、冊子らしさを強調 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 文字間隔を広げて高級感を出すためのクラス */
+.tracking-widest {
+  letter-spacing: 0.15em;
+}
+
+/* Bootstrapのデフォルトの閉じるボタンのスタイル微調整 */
+.custom-brochure-modal .btn-close {
+  background-size: 0.8rem;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.custom-brochure-modal .btn-close:hover {
+  opacity: 1;
+}

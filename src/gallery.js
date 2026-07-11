@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -10,9 +11,64 @@ const loadingSpinner = document.getElementById('loading-spinner');
 
 // 取得状態を管理する変数
 let currentIndex = 0;
-const fetchCount = 8;
+const fetchCount = 4;
 let isLoading = false; // 重複して通信しないためのロック用フラグ
 let hasMoreData = true; // まだDBにデータが残っているかのフラグ
+
+// 3Dプレビュー生成
+function create3DPreview(containerId, modelData) {
+  const SHAPES = {
+    box:          () => new THREE.BoxGeometry(1, 1, 1),
+    sphere:       () => new THREE.SphereGeometry(0.5, 16, 12),
+    cylinder:     () => new THREE.CylinderGeometry(0.5, 0.5, 1, 16),
+    cone:         () => new THREE.ConeGeometry(0.5, 1, 16),
+    torus:        () => new THREE.TorusGeometry(0.35, 0.15, 12, 24),
+    // torus:		() => new THREE.TorusGeometry(0.35, 0.15, 12, 24).rotateX(Math.PI / 2),
+    // 水平バージョン
+    tetrahedron:  () => new THREE.TetrahedronGeometry(0.6),
+    octahedron:   () => new THREE.OctahedronGeometry(0.55),
+    dodecahedron: () => new THREE.DodecahedronGeometry(0.55),
+    icosahedron:  () => new THREE.IcosahedronGeometry(0.55),
+  };
+
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  // 各カード専用のシーン、カメラ、レンダラーを作成（グローバルのものは使わない）
+  const scene = new THREE.Scene();
+
+  // 背景は透過させて、Bootstrap側の色（CSS）を活かす
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  // カメラの設定（モデル全体が見えるように少し引き気味に配置）
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.position.set(20, 20, 20); // ※作品の大きさに合わせて数値を調整してください
+  camera.lookAt(0, -8, 0);
+
+  // ライトの設定
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+  scene.add(ambientLight);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  dirLight.position.set(10, 20, 10);
+  scene.add(dirLight);
+
+  // Supabaseの jsonb 型は自動で配列として解釈されることが多いですが、念のためチェック
+  const designData = typeof modelData === 'string' ? JSON.parse(modelData) : modelData;
+
+  // JSONデータから3D空間にブロックを配置
+  if (designData && Array.isArray(designData)) {
+    designData.forEach(item => {
+      const geometry = SHAPES[item.shape]();
+      const material = new THREE.MeshLambertMaterial({ color: item.color });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.set(item.x + 0.5, item.y + 0.5, item.z + 0.5);
+      scene.add(mesh);
+    });
+  }
+  renderer.render(scene, camera);
+}
 
 // データを取得する非同期関数
 async function fetchGalleries() {
@@ -29,7 +85,7 @@ async function fetchGalleries() {
     // range(開始位置, 終了位置) で取得するデータの範囲を指定
     const { data, error } = await supabase
       .from('objects')
-      .select('id, title, author_name, thumbnail_url, created_at')
+      .select('id, title, author_name, model_data, created_at')
       .order('created_at', { ascending: false })
       .range(currentIndex, currentIndex + fetchCount - 1);
 
@@ -42,14 +98,22 @@ async function fetchGalleries() {
     data.forEach(item => {
       const colDiv = document.createElement('div');
       colDiv.className = 'col';
-      // 実際のDBのカラム名（item.title, item.image_url等）に合わせてください
       colDiv.innerHTML = `
-        <a href="./showcase.html?id=${item.id}">
-          <img src="${item.thumbnail_url || 'https://placehold.jp/300x300.png'}" class="img-fluid" alt="作品画像">
-        </a>
-        <p>${item.title || '無題'}</p>
+        <div class="card rounded-0 border-0 h-100">
+          <div id="preview-${item.id}" class="w-100 ratio ratio-1x1"></div>
+          <div class="card-body">
+            <a href="./showcase.html?id=${item.id}" class="text-decoration-none">${item.title || '無題'}</a>
+          </div>
+        </div>
       `;
       galleryContainer.appendChild(colDiv);
+      // DOMに要素が追加された直後に、その要素に対して3Dプレビューを構築して描画する
+      if (item.model_data) {
+        // コンテナのサイズが確定してから描画させるための安全策として少し遅延させる
+        setTimeout(() => {
+          create3DPreview(`preview-${item.id}`, item.model_data);
+        }, 50);
+      }
     });
 
     // 次に取得を開始するインデックスを更新

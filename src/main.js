@@ -4,6 +4,23 @@ import {OrbitControls } from "three/addons/controls/OrbitControls.js";
 // Limit one side size
 const GRID_SIZE = 16;
 
+// ---- Geometry Define ----
+const SHAPES = {
+  box:          () => new THREE.BoxGeometry(1, 1, 1),
+  sphere:       () => new THREE.SphereGeometry(0.5, 16, 12),
+  cylinder:     () => new THREE.CylinderGeometry(0.5, 0.5, 1, 16),
+  cone:         () => new THREE.ConeGeometry(0.5, 1, 16),
+  torus:        () => new THREE.TorusGeometry(0.35, 0.15, 12, 24),
+  // torus:		() => new THREE.TorusGeometry(0.35, 0.15, 12, 24).rotateX(Math.PI / 2),
+  // 水平バージョン
+  tetrahedron:  () => new THREE.TetrahedronGeometry(0.6),
+  octahedron:   () => new THREE.OctahedronGeometry(0.55),
+  dodecahedron: () => new THREE.DodecahedronGeometry(0.55),
+  icosahedron:  () => new THREE.IcosahedronGeometry(0.55),
+};
+
+let currentShape = "box"; // 今選ばれている形状
+
 // Scene (Like 3D space)
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xf0f0f0);
@@ -106,6 +123,19 @@ function onRightClick(event) {
 	removeVoxel(x, y, z);
 }
 
+function addVoxel(x, y, z) {
+	const key = `${x},${y},${z}`;
+	if (voxels.has(key)) return; // すでに埋まっている場合
+
+	const geometry = SHAPES[currentShape]();
+	const material = new THREE.MeshLambertMaterial({ color: 0xff6633 });
+	const mesh = new THREE.Mesh(geometry, material);
+
+	mesh.position.set(x + 0.5, y + 0.5, z + 0.5);
+	scene.add(mesh);
+	voxels.set(key, mesh);
+}
+
 function removeVoxel(x, y, z) {
 	const key = `${x},${y},${z}`;
 	const mesh = voxels.get(key);
@@ -117,19 +147,6 @@ function removeVoxel(x, y, z) {
 	voxels.delete(key);
 }
 
-function addVoxel(x, y, z) {
-	const key = `${x},${y},${z}`;
-	if (voxels.has(key)) return; // すでに埋まっている場合
-
-	const geometry = new THREE.BoxGeometry(1, 1, 1);
-	const material = new THREE.MeshLambertMaterial({ color: 0xff6633 });
-	const mesh = new THREE.Mesh(geometry, material);
-
-	mesh.position.set(x + 0.5, y + 0.5, z + 0.5);
-	scene.add(mesh);
-	voxels.set(key, mesh);
-}
-
 // Distinction between drag and click.
 let downX = 0, downY = 0;
 
@@ -139,6 +156,9 @@ window.addEventListener("pointerdown", (e) => {
 });
 
 window.addEventListener("pointerup", (e) => {
+	if (e.target !== renderer.domElement) return null;
+	// NOTE
+	// ブラウザのバブリング対策
 	const moved = Math.abs(e.clientX - downX) + Math.abs(e.clientY - downY);
 	if (moved > 5) return;
 
@@ -147,6 +167,7 @@ window.addEventListener("pointerup", (e) => {
 });
 
 // 右クリックで出るブラウザ標準メニューを止める
+// OrbitControlsが一応対策してはいた。
 window.addEventListener("contextmenu", (e) => e.preventDefault());
 
 function animate() {
@@ -163,3 +184,24 @@ window.addEventListener("resize", () => {
 	// 内部に投影行列を持っている。
 	renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+const shapeButtons = document.querySelectorAll(".shape-btn");
+
+shapeButtons.forEach((btn) => {
+	btn.addEventListener("click", (e) => {
+		e.stopPropagation();
+		// NOTE
+		// 
+
+		currentShape = btn.dataset.shape;
+
+		// 全てのボタンからslected classを外し，押されたボタンだけにつける
+		// NOTE
+		// (selectedが付与されるのは，ユーザーがボタンを押したとき)
+		shapeButtons.forEach((b) => b.classList.remove("selected"));
+		btn.classList.add("selected");
+	});
+});
+
+// Initial Setting
+document.querySelector('[data-shape="box"]').classList.add("selected");

@@ -43,3 +43,32 @@ body {
 	border-radius: 6px;
 	cursor: pointer;
 }
+
+#glass-btn {
+  padding: 8px 12px;
+  border: 1px solid #999;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#glass-btn.selected {
+  background: #88ccff;   /* ガラス色に合わせた水色 */
+  color: #fff;
+  border-color: #88ccff;
+}
+
+#hint-bar {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%); /* 中央寄せの定番イディオム */
+  padding: 6px 16px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  border-radius: 16px;
+  font-size: 13px;
+  z-index: 10;
+  pointer-events: none; /* ★これがないとバーの裏にブロックが置けなくなる */
+}

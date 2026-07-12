@@ -1,8 +1,12 @@
 import * as THREE from "three";
 import {OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { shadow } from "three/src/nodes/lighting/ShadowNode.js";
 
 // Limit one side size
 const GRID_SIZE = 16;
+
+// ガラス色
+const GLASS_COLOR = 0x88ccff;
 
 // ---- Geometry Define ----
 const SHAPES = {
@@ -25,20 +29,31 @@ let currentColor = 0xff6633;
 // Scene (Like 3D space)
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xf0f0f0);
+scene.fog = new THREE.Fog(0xfafafa, 30, 90);
 
 // Camera
-const camera = new THREE.PerspectiveCamera(
-	50, window.innerWidth / window.innerHeight, 0.1, 1000
+const aspect = window.innerWidth / window.innerHeight;
+const frustumSize = 16; // 画面に収める空間の大きさ。ズーム感の調整はここ
+
+const camera = new THREE.OrthographicCamera(
+  -frustumSize * aspect / 2, frustumSize * aspect / 2,  // left, right
+  frustumSize / 2, -frustumSize / 2,                     // top, bottom
+  0.1, 1000
 );
-camera.position.set(20, 20, 20);
+camera.position.set(20, 20, 20); // 斜め45度上から
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true});
+renderer.shadowMap.enabled = true;
+
 // HACK
 // アンチエイリアスを有効にするかどうかは要検討
 renderer.setSize(window.innerWidth, window.innerHeight);
 // TODO
 // 配置はのちに決定する
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 影の輪郭を柔らかく。
 document.body.appendChild(renderer.domElement);
 
 // Mouse control
@@ -50,13 +65,29 @@ controls.target.set(GRID_SIZE / 2, 0, GRID_SIZE / 2);
 // NOTE
 // 環境光と並行光源
 const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+ambient.intensity = 0.75;
 scene.add(ambient);
 const direct = new THREE.DirectionalLight(0xffffff, 0.8);
-direct.position.set(10, 30, 10);
+direct.castShadow = true;
+direct.position.set(30, 12, 5);
 scene.add(direct);
 
+direct.target.position.set(GRID_SIZE / 2, 0, GRID_SIZE / 2);
+scene.add(direct.target);
+
+direct.shadow.camera.left = -GRID_SIZE;
+direct.shadow.camera.right = GRID_SIZE;
+direct.shadow.camera.top = GRID_SIZE;
+direct.shadow.camera.bottom = -GRID_SIZE;
+direct.shadow.mapSize.set(2648, 2648);
+direct.shadow.radius = 4;
+direct.shadow.camera.updateProjectionMatrix();
+
+// const helper = new THREE.CameraHelper(direct.shadow.camera);
+// scene.add(helper);
+
 // Floor grid (16 × 16)
-const grid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE);
+const grid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE, 0xcccccc, 0xdddddd);
 // NOTE
 // GridHelperは光線の交差判定できない。
 grid.position.set(GRID_SIZE / 2, 0, GRID_SIZE / 2);
@@ -71,6 +102,16 @@ const material = new THREE.MeshBasicMaterial({ visible: false });
 const floor = new THREE.Mesh(floorGeometry, material);
 floor.position.set(GRID_SIZE / 2, 0, GRID_SIZE / 2);
 scene.add(floor);
+
+// Shadow floor
+const shadowFloor = new THREE.Mesh(
+	new THREE.PlaneGeometry(GRID_SIZE, GRID_SIZE).rotateX(-Math.PI / 2),
+	new THREE.ShadowMaterial({ opacity: 0.3 })
+);
+shadowFloor.position.set(GRID_SIZE / 2, 0.001, GRID_SIZE / 2);
+shadowFloor.castShadow = true;
+shadowFloor.receiveShadow = true;
+scene.add(shadowFloor);
 
 // The work data
 const voxels = new Map();
@@ -124,24 +165,50 @@ function onRightClick(event) {
 	removeVoxel(x, y, z);
 }
 
+// アニメーション中のブロックを管理するリスト
+const falling = [];
+
 function addVoxel(x, y, z, shape = currentShape, color = currentColor) {
-	const key = `${x},${y},${z}`;
-	if (voxels.has(key)) return; // すでに埋まっている場合
+  const key = `${x},${y},${z}`;
+  if (voxels.has(key)) return;
 
-	const geometry = SHAPES[shape]();
-	const material = new THREE.MeshLambertMaterial({ color });
-	const mesh = new THREE.Mesh(geometry, material);
+  const isGlass = (color === GLASS_COLOR);
+  const material = new THREE.MeshLambertMaterial({
+		color: color,
+		transparent: isGlass,
+		opacity: isGlass ? 0.4 : 1.0,
+	 });
 
-	mesh.position.set(x + 0.5, y + 0.5, z + 0.5);
+  const mesh = new THREE.Mesh(SHAPES[shape](), material);
+  const targetY = y + 0.5;
+  mesh.position.set(x + 0.5, targetY + 10, z + 0.5); // 10マス上空からスタート
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+  voxels.set(key, { mesh, shape, color });
 
-	// mesh.userData = {
-    // shape: shape,
-    // color: color
-	// };
-
-	scene.add(mesh);
-	voxels.set(key, { mesh, shape, color });
+  falling.push({ mesh, targetY, velocity: 0 });
 }
+// function addVoxel(x, y, z, shape = currentShape, color = currentColor) {
+// 	const key = `${x},${y},${z}`;
+// 	if (voxels.has(key)) return; // すでに埋まっている場合
+
+// 	const geometry = SHAPES[shape]();
+// 	const material = new THREE.MeshLambertMaterial({ color });
+// 	const mesh = new THREE.Mesh(geometry, material);
+
+// 	mesh.castShadow = true;
+// 	mesh.receiveShadow = true;
+// 	mesh.position.set(x + 0.5, y + 0.5, z + 0.5);
+
+// 	// mesh.userData = {
+//     // shape: shape,
+//     // color: color
+// 	// };
+
+// 	scene.add(mesh);
+// 	voxels.set(key, { mesh, shape, color });
+// }
 
 function removeVoxel(x, y, z) {
 	const key = `${x},${y},${z}`;
@@ -177,8 +244,20 @@ window.addEventListener("pointerup", (e) => {
 // OrbitControlsが一応対策してはいた。
 window.addEventListener("contextmenu", (e) => e.preventDefault());
 
+function updateFalling() {
+  for (let i = falling.length - 1; i >= 0; i--) {
+    const f = falling[i];
+    f.velocity += 0.02;            // 重力加速
+    f.mesh.position.y -= f.velocity;
+    if (f.mesh.position.y <= f.targetY) {
+      f.mesh.position.y = f.targetY; // 着地でスナップ
+      falling.splice(i, 1);          // リストから除去
+    }
+  }
+}
 function animate() {
 	controls.update();
+	updateFalling();
 	renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
@@ -222,6 +301,19 @@ const colorPicker = document.querySelector("#color-picker");
 colorPicker.addEventListener("input", () => {
 	// Char -> Num
 	currentColor = parseInt(colorPicker.value.slice(1), 16);
+});
+
+// ---- ガラスボタンの処理 ----
+const glassBtn = document.querySelector("#glass-btn");
+
+glassBtn.addEventListener("click", () => {
+  currentColor = GLASS_COLOR;
+  glassBtn.classList.add("selected");
+});
+
+// カラーピッカーを触ったらガラス選択は解除
+colorPicker.addEventListener("input", () => {
+  glassBtn.classList.remove("selected");
 });
 
 // JSON形式で図形情報の出力

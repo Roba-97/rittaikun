@@ -3,6 +3,13 @@ body {
 	overflow: hidden;
 }
 
+canvas {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: -1;
+}
+
 #toolbar {
 	position: relative;
 	z-index: 10; /* 3D画面より手前に描画 */

@@ -318,8 +318,14 @@ colorPicker.addEventListener("input", () => {
 const glassBtn = document.querySelector("#glass-btn");
 
 glassBtn.addEventListener("click", () => {
-  currentColor = GLASS_COLOR;
-  glassBtn.classList.add("selected");
+  const isSelected = glassBtn.classList.toggle("selected");
+
+  if (isSelected) {
+    currentColor = GLASS_COLOR;
+  } else {
+    // 解除時はカラーピッカーの色に戻す
+    currentColor = parseInt(colorPicker.value.slice(1), 16);
+  }
 });
 
 // カラーピッカーを触ったらガラス選択は解除

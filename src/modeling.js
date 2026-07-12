@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { shadow } from "three/src/nodes/lighting/ShadowNode.js";
+import { supabase } from "./const.js";
 
 // Limit one side size
 const GRID_SIZE = 16;
@@ -31,7 +31,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xf0f0f0);
 scene.fog = new THREE.Fog(0xfafafa, 30, 90);
 
-// Camera
+// Camera (pararel projection)
 // const aspect = window.innerWidth / window.innerHeight;
 // const frustumSize = 16; // 画面に収める空間の大きさ。ズーム感の調整はここ
 
@@ -84,7 +84,7 @@ direct.shadow.camera.left = -GRID_SIZE;
 direct.shadow.camera.right = GRID_SIZE;
 direct.shadow.camera.top = GRID_SIZE;
 direct.shadow.camera.bottom = -GRID_SIZE;
-direct.shadow.mapSize.set(2648, 2648);
+direct.shadow.mapSize.set(2048, 2048);
 direct.shadow.radius = 4;
 direct.shadow.camera.updateProjectionMatrix();
 
@@ -114,7 +114,6 @@ const shadowFloor = new THREE.Mesh(
 	new THREE.ShadowMaterial({ opacity: 0.3 })
 );
 shadowFloor.position.set(GRID_SIZE / 2, 0.001, GRID_SIZE / 2);
-shadowFloor.castShadow = true;
 shadowFloor.receiveShadow = true;
 scene.add(shadowFloor);
 
@@ -173,7 +172,7 @@ function onRightClick(event) {
 // アニメーション中のブロックを管理するリスト
 const falling = [];
 
-function addVoxel(x, y, z, shape = currentShape, color = currentColor) {
+function addVoxel(x, y, z, shape = currentShape, color = currentColor, instant = false) {
   const key = `${x},${y},${z}`;
   if (voxels.has(key)) return;
 
@@ -186,12 +185,19 @@ function addVoxel(x, y, z, shape = currentShape, color = currentColor) {
 
   const mesh = new THREE.Mesh(SHAPES[shape](), material);
   const targetY = y + 0.5;
-  mesh.position.set(x + 0.5, targetY + 10, z + 0.5); // 10マス上空からスタート
   mesh.castShadow = true;
   mesh.receiveShadow = true;
-  scene.add(mesh);
   voxels.set(key, { mesh, shape, color });
 
+  if (instant) {
+    // 既存データの読み込み時は落下演出をせず即座に配置する
+    mesh.position.set(x + 0.5, targetY, z + 0.5);
+    scene.add(mesh);
+    return;
+  }
+
+  mesh.position.set(x + 0.5, targetY + 10, z + 0.5); // 10マス上空からスタート
+  scene.add(mesh);
   falling.push({ mesh, targetY, velocity: 0 });
 }
 // function addVoxel(x, y, z, shape = currentShape, color = currentColor) {
@@ -344,7 +350,7 @@ export function exportToJSON() {
   return jsonString;
 }
 
-function buildFromJSON(jsonString) {
+function buildFromJSON(modelData) {
   // 現在のキャンバスをリセット
   voxels.forEach((v, key) => {
     scene.remove(v.mesh);
@@ -353,12 +359,36 @@ function buildFromJSON(jsonString) {
   });
   voxels.clear();
 
-  // 文字列からJavaScriptの配列に戻す
-  const designData = JSON.parse(jsonString);
+  // Supabaseのjsonb型はオブジェクトとして渡ってくることが多いが、文字列の場合も考慮する
+  const designData = typeof modelData === "string" ? JSON.parse(modelData) : modelData;
 
-  // 配列のデータを使い再配置
+  // 配列のデータを使い再配置（落下演出なしで即座に配置）
   designData.forEach(item => {
-    // addVoxel関数にすべてのパラメータを渡す
-    addVoxel(item.x, item.y, item.z, item.shape, item.color);
+    addVoxel(item.x, item.y, item.z, item.shape, item.color, true);
   });
+}
+
+// 既存作品のIDがURLに指定されていれば、そのモデルデータを読み込んで復元する
+async function loadFromId(workId) {
+  try {
+    const { data, error } = await supabase
+      .from("objects")
+      .select("model_data")
+      .eq("id", workId)
+      .single();
+
+    if (error) throw error;
+
+    if (data && data.model_data) {
+      buildFromJSON(data.model_data);
+    }
+  } catch (error) {
+    console.error("モデルの読み込みに失敗しました:", error);
+  }
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const workId = urlParams.get("id");
+if (workId) {
+  loadFromId(workId);
 }

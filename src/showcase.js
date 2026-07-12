@@ -22,19 +22,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (error) throw error;
 
     if (data) {
-      const container = document.getElementById('canvas-container')
-      container.innerHTML = `
-        <h1 id="work-title" class="text-center my-3">${data.title}
-          <span class="fs-4 text-muted">By ${data.author_name || '匿名さん'}</span>
-        </h1>
-        <div id="preview-${data.id}" class="w-100 flex-grow-1" style="max-height: 50%;"></div>
+      const titleElem = document.getElementById('work-title');
+      titleElem.innerHTML = `
+        ${data.title} <span class="fs-4 text-muted">by ${data.author_name}</span>
       `;
 
-      const titleHeight = document.getElementById('work-title').offsetHeight;
-      const buttonsHeight = document.getElementById('buttons').offsetHeight;
-
-      const preview = document.getElementById(`preview-${data.id}`);
-      preview.style.maxHeight = `calc(95% - ${titleHeight}px - ${buttonsHeight}px)`;
+      const container = document.getElementById('canvas-container')
+      container.innerHTML = `
+        <div id="preview-${data.id}" class="w-100 h-100" style="cursor: grab"></div>
+      `;
 
       if (data.model_data) {
         setTimeout(() => {

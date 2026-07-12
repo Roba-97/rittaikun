@@ -4,19 +4,35 @@ body {
 }
 
 #toolbar {
-	position: fixed; /* 画面に対して固定配置 */
-	top: 10px;
-	left: 10px;
-	display: flex; /* 子要素を横に並べる */
-	gap: 6px; /* ボタン間の隙間 */
-	flex-wrap: wrap; /* 画面が狭ければ折り返す */
+	position: relative;
 	z-index: 10; /* 3D画面より手前に描画 */
+}
+
+.toolbar-inner {
+	display: flex;
+	/* 子要素を横に並べる */
+	gap: 6px;
+	/* ボタン間の隙間 */
+	flex-wrap: wrap;
+	/* 画面が狭ければ折り返す */
+}
+
+#hint-bar {
+	padding: 6px 16px;
+	background: rgba(0, 0, 0, 0.55);
+	color: #fff;
+	border-radius: 16px;
+	font-size: 13px;
+	z-index: 10;
+	pointer-events: none;
+	width: max-content;
+	/* ★これがないとバーの裏にブロックが置けなくなる */
 }
 
 #submit-form {
 	position: fixed; /* 画面に対して固定配置 */
 	bottom: 10px;
-	left: 10px;
+	right: 10px;
 	z-index: 10; /* 3D画面より手前に描画 */
 }
 
@@ -72,18 +88,4 @@ body {
   background: #e63946;   /* 削除モードを示す赤 */
   color: #fff;
   border-color: #e63946;
-}
-
-#hint-bar {
-  position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%); /* 中央寄せの定番イディオム */
-  padding: 6px 16px;
-  background: rgba(0, 0, 0, 0.55);
-  color: #fff;
-  border-radius: 16px;
-  font-size: 13px;
-  z-index: 10;
-  pointer-events: none; /* ★これがないとバーの裏にブロックが置けなくなる */
 }

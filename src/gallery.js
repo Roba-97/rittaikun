@@ -163,6 +163,7 @@ const observerOptions = {
 
 const observer = new IntersectionObserver((entries) => {
   // 監視対象（loadingSentinel）が画面に入ったらデータを取得
+  console.log("Observer triggered! Is intersecting:", entries[0].isIntersecting);
   if (entries[0].isIntersecting) {
     fetchGalleries();
   }

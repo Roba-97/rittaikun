@@ -8,22 +8,28 @@
 	<link rel="stylesheet" href="../css/create.css">
 </head>
 <body>
-	<div id="toolbar">
-		<button class="shape-btn" data-shape="box">立方体</button>
-		<button class="shape-btn" data-shape="sphere">球</button>
-		<button class="shape-btn" data-shape="cylinder">円柱</button>
-		<button class="shape-btn" data-shape="cone">円錐</button>
-		<button class="shape-btn" data-shape="torus">トーラス</button>
-		<button class="shape-btn" data-shape="tetrahedron">四面体</button>
-		<button class="shape-btn" data-shape="octahedron">八面体</button>
-		<button class="shape-btn" data-shape="dodecahedron">十二面体</button>
-		<button class="shape-btn" data-shape="icosahedron">二十面体</button>
-		<input type="color" id="color-picker" value="#ff6633">
-		<button id="glass-btn">ガラス</button>
-		<button id="delete-button">削除</button>
-		<input type="file" id="file-input" accept=".json" style="display: none;">
+	<div class="d-flex flex-row justify-content-between align-items-start flex-wrap pt-3 px-3" style="background-color: #f0f0f0;">
+		<a id="back-link" class="btn btn-secondary" href="./gallery.html">ギャラリーに戻る</a>
+		<div id="toolbar" class="d-flex flex-column align-items-end gap-2">
+			<div class="toolbar-inner">
+				<button class="shape-btn" data-shape="box">立方体</button>
+				<button class="shape-btn" data-shape="sphere">球</button>
+				<button class="shape-btn" data-shape="cylinder">円柱</button>
+				<button class="shape-btn" data-shape="cone">円錐</button>
+				<button class="shape-btn" data-shape="torus">トーラス</button>
+				<button class="shape-btn" data-shape="tetrahedron">四面体</button>
+				<button class="shape-btn" data-shape="octahedron">八面体</button>
+				<button class="shape-btn" data-shape="dodecahedron">十二面体</button>
+				<button class="shape-btn" data-shape="icosahedron">二十面体</button>
+				<input type="color" id="color-picker" value="#ff6633">
+				<button id="glass-btn">ガラス</button>
+        <button id="delete-button">削除</button>
+				<input type="file" id="file-input" accept=".json" style="display: none;">
+			</div>
+			<div id="hint-bar">左クリック: 置く ／ 右クリック: 削除 ／ ドラッグ: 視点回転</div>
+		</div>
 	</div>
-	<form id="submit-form" class="position-fixed bottom-0 start-0 p-3 d-flex flex-wrap gap-2 align-items-start needs-validation" novalidate>
+	<form id="submit-form" class="p-3 d-flex flex-wrap gap-2 align-items-start needs-validation" novalidate>
 		<div class="position-relative" style="width: 320px;">
 			<input type="text" class="form-control" id="title-input" placeholder="作品のタイトル（必須）" required>
 			<div class="invalid-feedback position-absolute bottom-100">
@@ -39,7 +45,6 @@
 			</button>
 		</div>
 	</form>
-	<div id="hint-bar">左クリック: 置く ／ 右クリック: 削除 ／ ドラッグ: 視点回転</div>
 	<script type="module" src="../src/modeling.js"></script>
 	<script type="module" src="../src/save.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

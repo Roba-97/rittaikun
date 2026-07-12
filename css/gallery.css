@@ -46,3 +46,10 @@
   /* rounded-5より少しシャープな角丸 */
   border-radius: 1rem;
 }
+
+/* style.css等 */
+#loading-sentinel {
+  height: 50px;
+  /* 0pxではなく高さを確保する */
+  width: 100%;
+}

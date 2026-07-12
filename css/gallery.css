@@ -38,17 +38,11 @@
 
 .preview-glass-panel {
   /* ほんのわずかな白 */
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.6);
   /* 背景をすりガラスのようにぼかす */
   backdrop-filter: blur(8px);
   /* Safari対応 */
   -webkit-backdrop-filter: blur(8px);
-  /* 境界を際立たせる極細の白い枠 */
-  border: 1px solid rgba(255, 255, 255, 0.3);
   /* rounded-5より少しシャープな角丸 */
   border-radius: 1rem;
-}
-
-.preview-ratio {
-  aspect-ratio: 10/9;
 }

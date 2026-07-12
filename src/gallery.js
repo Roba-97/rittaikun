@@ -67,7 +67,28 @@ function create3DPreview(containerId, modelData) {
       scene.add(mesh);
     });
   }
+
   renderer.render(scene, camera);
+
+  const resizeObserver = new ResizeObserver(() => {
+    // コンテナの最新の幅と高さを取得
+    const container = document.getElementById(containerId);
+    const newWidth = container.clientWidth;
+    const newHeight = container.clientHeight;
+
+    // 画面から見えなくなって潰れている時（0px）はエラーを防ぐため処理をスキップ
+    if (newWidth === 0 || newHeight === 0) return;
+
+    // カメラのアスペクト比（縦横比）を新しいサイズに合わせて更新
+    camera.aspect = newWidth / newHeight;
+    camera.updateProjectionMatrix();
+
+    // レンダラー（キャンバス）のサイズを新しい幅と高さに更新
+    renderer.setSize(newWidth, newHeight);
+    renderer.render(scene, camera);
+  });
+
+  resizeObserver.observe(container);
 }
 
 // データを取得する非同期関数
@@ -99,10 +120,12 @@ async function fetchGalleries() {
       const colDiv = document.createElement('div');
       colDiv.className = 'col';
       colDiv.innerHTML = `
-        <div class="card rounded-0 border-0 h-100 bg-opacity-75 preview-glass-panel">
-          <div id="preview-${item.id}" class="w-100 preview-ratio"></div>
-          <div class="card-body text-center">
-            <a href="./showcase.html?id=${item.id}" class="text-decoration-none text-secondary fw-bold fs-4">${item.title || '無題'}</a>
+        <div class="bg-opacity-75 preview-glass-panel w-100 h-100 d-flex flex-column">
+          <div class="ratio ratio-1x1 w-100">
+            <div id="preview-${item.id}"></div>
+          </div>
+          <div class="py-3 text-center">
+            <a href="./showcase.html?id=${item.id}" class="stretched-link text-decoration-none text-dark fw-bold fs-4">${item.title || '無題'}</a>
           </div>
         </div>
       `;

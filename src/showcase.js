@@ -28,17 +28,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (data) {
       const container = document.getElementById('canvas-container')
       container.innerHTML = `
-        <h1 class="text-center my-3">${data.title}
+        <h1 id="work-title" class="text-center my-3">${data.title}
           <span class="fs-4 text-muted">By ${data.author_name || '匿名さん'}</span>
         </h1>
-        <div id="preview-${data.id}" class="w-100 flex-grow-1"></div>
+        <div id="preview-${data.id}" class="w-100 flex-grow-1" style="max-height: 50%;"></div>
       `;
+
+      const titleHeight = document.getElementById('work-title').offsetHeight;
+      const buttonsHeight = document.getElementById('buttons').offsetHeight;
+
+      const preview = document.getElementById(`preview-${data.id}`);
+      preview.style.maxHeight = `calc(95% - ${titleHeight}px - ${buttonsHeight}px)`;
 
       if (data.model_data) {
         setTimeout(() => {
           create3DPreview(`preview-${data.id}`, data.model_data);
         }, 50);
       }
+
+      const createLink = document.getElementById('create-link');
+      createLink.href = `./create.html?id=${data.id}`
     }
   } catch (error) {
     console.error('データの取得に失敗しました:', error);

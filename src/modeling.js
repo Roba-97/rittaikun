@@ -392,3 +392,14 @@ const workId = urlParams.get("id");
 if (workId) {
   loadFromId(workId);
 }
+
+// ギャラリーに戻るボタン
+const backLink = document.getElementById('back-link');
+backLink.addEventListener('click', (event) => {
+  const confirmed = window.confirm('投稿してない場合、このページでの作業は保存されません。');
+
+  // 「キャンセル」が押されたら遷移を止める
+  if (!confirmed) {
+    event.preventDefault(); // リンクの本来の遷移動作をキャンセル
+  }
+});

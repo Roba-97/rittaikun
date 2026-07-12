@@ -32,13 +32,18 @@ scene.background = new THREE.Color(0xf0f0f0);
 scene.fog = new THREE.Fog(0xfafafa, 30, 90);
 
 // Camera
-const aspect = window.innerWidth / window.innerHeight;
-const frustumSize = 16; // 画面に収める空間の大きさ。ズーム感の調整はここ
+// const aspect = window.innerWidth / window.innerHeight;
+// const frustumSize = 16; // 画面に収める空間の大きさ。ズーム感の調整はここ
 
-const camera = new THREE.OrthographicCamera(
-  -frustumSize * aspect / 2, frustumSize * aspect / 2,  // left, right
-  frustumSize / 2, -frustumSize / 2,                     // top, bottom
-  0.1, 1000
+// const camera = new THREE.OrthographicCamera(
+//   -frustumSize * aspect / 2, frustumSize * aspect / 2,  // left, right
+//   frustumSize / 2, -frustumSize / 2,                     // top, bottom
+//   0.1, 1000
+// );
+const camera = new THREE.PerspectiveCamera(
+  50,                                        // 視野角(度)
+  window.innerWidth / window.innerHeight,    // アスペクト比
+  0.1, 1000                                  // near, far
 );
 camera.position.set(20, 20, 20); // 斜め45度上から
 

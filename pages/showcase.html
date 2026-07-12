@@ -8,18 +8,17 @@
   <link rel="stylesheet" href="../css/showcase.css">
 </head>
 <body>
-  <main class="container my-5">
-    <div id="canvas-container" class="w-100 mb-4 overflow-hidden position-relative">
-      <canvas id="three-canvas" class="w-100 h-100 d-block"></canvas>
+  <div class="container-fluid p-0 bg-body">
+    <div class="container min-vh-100 h-100 d-flex justify-content-center align-items-center">
+      <div class="d-flex flex-column glass-panel responsive-panel bg-opacity-75">
+        <div id="canvas-container" class="w-100 flex-grow-1 d-flex flex-column px-3"></div>
+        <div id="buttons" class="d-flex gap-3 mt-3">
+          <a href="./gallery.html" class="btn btn-gallery py-2 px-3 rounded-2 text-nowrap">ギャラリーへ</a>
+          <a id="create-link" class="btn btn-create py-2 px-3 rounded-2 text-nowrap">作品を引き継ぐ</a>
+        </div>
+      </div>
     </div>
-    <div class="px-2">
-      <h2 id="work-title" class="fw-bold mb-2">作品名</h2>
-      <p class="text-muted">
-        By <span id="work-author">作者名 (または匿名)</span>
-      </p>
-    </div>
-    <a href="./gallery.html">ギャラリールームへ</a>
-  </main>
+  </div>
   <script type="module" src="../src/showcase.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>

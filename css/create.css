@@ -59,6 +59,21 @@ body {
   border-color: #88ccff;
 }
 
+#delete-button {
+  padding: 8px 12px;
+  border: 1px solid #999;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#delete-button.selected {
+  background: #e63946;   /* 削除モードを示す赤 */
+  color: #fff;
+  border-color: #e63946;
+}
+
 #hint-bar {
   position: fixed;
   bottom: 10px;

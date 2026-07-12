@@ -25,6 +25,7 @@ const SHAPES = {
 
 let currentShape = "box"; // 今選ばれている形状
 let currentColor = 0xff6633;
+let isDelete = false;
 
 // Scene (Like 3D space)
 const scene = new THREE.Scene();
@@ -247,8 +248,10 @@ window.addEventListener("pointerup", (e) => {
 	const moved = Math.abs(e.clientX - downX) + Math.abs(e.clientY - downY);
 	if (moved > 5) return;
 
-	if (e.button === 0) onClick(e); // left button
-	else if (e.button === 2) onRightClick(e); // right button
+	if (e.button === 0) {
+		if (isDelete) onRightClick(e); // 削除モード中は左クリックも削除として扱う
+		else onClick(e);
+	} else if (e.button === 2) onRightClick(e); // right button
 });
 
 // 右クリックで出るブラウザ標準メニューを止める
@@ -325,6 +328,18 @@ glassBtn.addEventListener("click", () => {
 // カラーピッカーを触ったらガラス選択は解除
 colorPicker.addEventListener("input", () => {
   glassBtn.classList.remove("selected");
+});
+
+// ---- 削除ボタンの処理 ----
+const deleteBtn = document.getElementById("delete-button");
+const hintBar = document.getElementById("hint-bar");
+
+deleteBtn.addEventListener("click", () => {
+	isDelete = !isDelete;
+	deleteBtn.classList.toggle("selected", isDelete);
+	hintBar.textContent = isDelete
+		? "左クリック: 削除 ／ 右クリック: 削除 ／ ドラッグ: 視点回転（削除モード）"
+		: "左クリック: 置く ／ 右クリック: 削除 ／ ドラッグ: 視点回転";
 });
 
 // JSON形式で図形情報の出力

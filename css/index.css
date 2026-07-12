@@ -12,10 +12,10 @@
 .glass-panel {
   /* ほんのわずかな黒 */
   background-color: rgba(0, 0, 0, 0.4);
-  /* 背景をすりガラスのようにぼかす */
-  backdrop-filter: blur(8px);
   /* Safari対応 */
   -webkit-backdrop-filter: blur(8px);
+  /* 背景をすりガラスのようにぼかす */
+  backdrop-filter: blur(8px);
   /* 境界を際立たせる極細の白い枠 */
   border: 1px solid rgba(255, 255, 255, 0.3);
   /* rounded-5より少しシャープな角丸 */
@@ -26,8 +26,9 @@
   background-color: rgba(255, 255, 255, 0.25);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(4px);
   /* ボタン自体も少しぼかす */
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
   letter-spacing: 2px;
   transition: all 0.3s ease;
 }

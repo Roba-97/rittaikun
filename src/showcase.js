@@ -21,10 +21,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (error) throw error;
 
+    let parent = null
+    if (data.parent_id) {
+      const { data: parentResult, error } = await supabase
+        .from('objects')
+        .select('id, title')
+        .eq('id', data.parent_id)
+        .single();
+      if (!error) parent = parentResult;
+    }
+
+    console.log(parent);
+    const parentElem = parent
+      ? `<a href="./showcase.html?id=${parent.id}" class="d-block fs-5 text-decoration-none">『${parent.title}』のリミックス</a>`
+      : '';
+
     if (data) {
-      const titleElem = document.getElementById('work-title');
+      const titleElem = document.getElementById('work-header');
       titleElem.innerHTML = `
-        ${data.title} <span class="fs-4 text-muted">by ${data.author_name}</span>
+        ${parentElem}
+        <h1>${data.title} <span class="fs-4 text-muted">by ${data.author_name}</span></h1>
       `;
 
       const container = document.getElementById('canvas-container')

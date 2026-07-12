@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>立体くん作成ページ</title>
-	<link rel="stylesheet" href="../css/style.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../css/create.css">
 </head>
 <body>
 	<div id="toolbar">
@@ -17,15 +18,27 @@
 		<button class="shape-btn" data-shape="octahedron">八面体</button>
 		<button class="shape-btn" data-shape="dodecahedron">十二面体</button>
 		<button class="shape-btn" data-shape="icosahedron">二十面体</button>
-		<input type="color" id="color-picker" value="ff6633">
-		<form>
-		<input type="text" id="author-input" placeholder="作者名">
-		<input type="text" id="title-input" placeholder="タイトル">
-		<button id="save-btn">保存</button>
-		</form>
-	<input type="file" id="file-input" accept=".json" style="display: none;">
+		<input type="color" id="color-picker" value="#ff6633">
+		<input type="file" id="file-input" accept=".json" style="display: none;">
 	</div>
+	<form id="submit-form" class="position-fixed bottom-0 start-0 p-3 d-flex flex-wrap gap-2 align-items-start needs-validation" novalidate>
+		<div class="position-relative" style="width: 320px;">
+			<input type="text" class="form-control" id="title-input" placeholder="作品のタイトル（必須）" required>
+			<div class="invalid-feedback position-absolute bottom-100">
+				タイトルを入力してください！
+			</div>
+		</div>
+		<div style="width: 180px;">
+			<input type="text" class="form-control" id="author-input" placeholder="作者名（任意）">
+		</div>
+		<div>
+			<button type="submit" class="btn btn-primary shadow-sm" id="save-btn">
+				完成した作品を展示
+			</button>
+		</div>
+	</form>
 	<script type="module" src="../src/modeling.js"></script>
 	<script type="module" src="../src/save.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

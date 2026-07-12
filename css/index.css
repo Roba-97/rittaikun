@@ -10,7 +10,7 @@
 }
 
 .glass-panel {
-  /* ほんのわずかな白 */
+  /* ほんのわずかな黒 */
   background-color: rgba(0, 0, 0, 0.4);
   /* 背景をすりガラスのようにぼかす */
   backdrop-filter: blur(8px);

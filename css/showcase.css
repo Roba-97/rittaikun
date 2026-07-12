@@ -1,5 +1,60 @@
-#canvas-container {
-  height: 70vh;
-  background-color: #e9ecef;
-  /* キャンバスが埋め込まれるまでの仮の背景色 */
+.bg-body {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100vh;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.25)), url('../img/showcase.jpg');
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow-y: hidden;
+}
+
+.glass-panel {
+  /* ほんのわずかな白 */
+  background-color: rgba(255, 255, 255, 0.4);
+  /* 背景をすりガラスのようにぼかす */
+  backdrop-filter: blur(8px);
+  /* Safari対応 */
+  -webkit-backdrop-filter: blur(8px);
+  /* 境界を際立たせる極細の白い枠 */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 1rem;
+}
+
+.btn-gallery, .btn-create {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  /* ボタン自体も少しぼかす */
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+}
+.btn-gallery:hover, .btn-create:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #000000;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.6);
+}
+
+/* 1. デフォルト（スマホなどの狭い画面用）: 画面の90%を使って広く表示 */
+.responsive-panel {
+  width: 90%;
+  height: 75%;
+}
+
+/* 2. タブレットサイズ（画面幅 768px 以上）: 少し縮めて75%に */
+@media (min-width: 768px) {
+  .responsive-panel {
+    width: 75%;
+    height: 75%;
+  }
+}
+
+/* 3. PCサイズ（画面幅 992px 以上）: 元々のサイズである50%に */
+@media (min-width: 992px) {
+  .responsive-panel {
+    width: 50%;
+    aspect-ratio: 1;
+  }
 }

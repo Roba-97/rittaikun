@@ -1,9 +1,5 @@
 import * as THREE from 'three';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from './const.js';
 
 const galleryContainer = document.getElementById('gallery-container');
 const loadingSentinel = document.getElementById('loading-sentinel');

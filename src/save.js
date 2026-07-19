@@ -1,5 +1,6 @@
-import { exportToJSON } from "./modeling.js";
 import { supabase } from "./const.js";
+import { parentId, exportToJSON } from "./modeling.js";
+
 
 async function saveData() {
   try {
@@ -16,6 +17,7 @@ async function saveData() {
           title: title,
           author_name: authorName,
           model_data: modelData,       // 🔥 ここにボクセルの配列がそのまま入ります！
+          parent_id: parentId ? parentId : null,
         }
       ])
       .select();

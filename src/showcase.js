@@ -28,20 +28,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         .select('id, title')
         .eq('id', data.parent_id)
         .single();
-      if (!error) parent = parentResult;
-    }
 
-    console.log(parent);
-    const parentElem = parent
-      ? `<a href="./showcase.html?id=${parent.id}" class="d-block fs-5 text-decoration-none">『${parent.title}』のリミックス</a>`
-      : '';
+      if (error) throw error
+      else parent = parentResult;
+    }
 
     if (data) {
       const titleElem = document.getElementById('work-header');
-      titleElem.innerHTML = `
-        ${parentElem}
-        <h1>${data.title} <span class="fs-4 text-muted">by ${data.author_name}</span></h1>
-      `;
+      const authorName = data.author_name || '匿名さん';
+
+      titleElem.innerHTML = `<h1>${data.title} <span class="fs-4 text-muted">by ${authorName}</span></h1>`;
+
+      if (parent) {
+        const linkElem = document.createElement('a');
+        linkElem.href = `./showcase.html?id=${parent.id}`;
+        linkElem.className = 'd-block fs-5 text-decoration-none';
+        linkElem.textContent = `『${parent.title}』のリミックス`;
+
+        // titleElemの先頭に挿入
+        titleElem.prepend(linkElem);
+      }
 
       const container = document.getElementById('canvas-container')
       container.innerHTML = `

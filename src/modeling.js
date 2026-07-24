@@ -413,6 +413,7 @@ const workId = urlParams.get("id");
 if (workId) {
   loadFromId(workId);
 }
+export { workId as parentId };
 
 // ギャラリーに戻るボタン
 const backLink = document.getElementById('back-link');

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { supabase, SHAPES } from './const.js';
+import html2canvas from "html2canvas";
 
 document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -79,7 +80,7 @@ function create3DPreview(containerId, modelData) {
   const scene = new THREE.Scene();
 
   // 背景は透過させて、Bootstrap側の色（CSS）を活かす
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true});
   renderer.setSize(container.clientWidth, container.clientHeight);
   container.appendChild(renderer.domElement);
 
@@ -137,4 +138,18 @@ function create3DPreview(containerId, modelData) {
   });
 
   resizeObserver.observe(container);
+}
+
+const screenshotButton = document.getElementById('screenshot');
+screenshotButton.addEventListener('click', getScreenShot);
+
+async function getScreenShot() {
+	const canvas = await html2canvas(document.body);
+	const dataUrl = canvas.toDataURL('/image/png');
+	const downloadLink = document.createElement('a');
+  downloadLink.href = dataUrl;
+  downloadLink.download = 'my-3d-model.png'; // ダウンロードされるファイル名
+
+  downloadLink.click();
+  console.log('save model!!')
 }

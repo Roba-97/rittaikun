@@ -1,27 +1,12 @@
 import * as THREE from "three";
 import {OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { supabase } from "./const.js";
+import { supabase, SHAPES } from "./const.js";
 
 // Limit one side size
 const GRID_SIZE = 16;
 
 // ガラス色
 const GLASS_COLOR = 0x88ccff;
-
-// ---- Geometry Define ----
-const SHAPES = {
-  box:          () => new THREE.BoxGeometry(1, 1, 1),
-  sphere:       () => new THREE.SphereGeometry(0.5, 16, 12),
-  cylinder:     () => new THREE.CylinderGeometry(0.5, 0.5, 1, 16),
-  cone:         () => new THREE.ConeGeometry(0.5, 1, 16),
-  torus:        () => new THREE.TorusGeometry(0.35, 0.15, 12, 24),
-  // torus:		() => new THREE.TorusGeometry(0.35, 0.15, 12, 24).rotateX(Math.PI / 2),
-  // 水平バージョン
-  tetrahedron:  () => new THREE.TetrahedronGeometry(0.6),
-  octahedron:   () => new THREE.OctahedronGeometry(0.55),
-  dodecahedron: () => new THREE.DodecahedronGeometry(0.55),
-  icosahedron:  () => new THREE.IcosahedronGeometry(0.55),
-};
 
 let currentShape = "box"; // 今選ばれている形状
 let currentColor = 0xff6633;

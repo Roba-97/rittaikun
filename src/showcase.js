@@ -144,7 +144,28 @@ const screenshotButton = document.getElementById('screenshot');
 screenshotButton.addEventListener('click', getScreenShot);
 
 async function getScreenShot() {
-	const canvas = await html2canvas(document.body);
+  const targetElem = document.getElementById('screenshot-target');
+  const size = Math.max(targetElem.clientWidth, targetElem.clientHeight);
+
+  const paddingX = 100;
+  const paddingY = 50;
+
+  // スタート位置を余白分だけ左上にずらす
+  const startX = (document.body.clientWidth - size) / 2 - paddingX;
+  const startY = (document.body.clientHeight - size) / 2 - paddingY;
+
+  // 切り取る全体サイズを両側の余白分（padding * 2）だけ大きくする
+  const captureWidth = size + (paddingX * 2);
+  const captureHeight = size + (paddingY * 2);
+
+  const canvas = await html2canvas(document.body, {
+    x: startX,
+    y: startY,
+    width: captureWidth,
+    height: captureHeight,
+    backgroundColor: null
+  });
+
 	const dataUrl = canvas.toDataURL('/image/png');
 	const downloadLink = document.createElement('a');
   downloadLink.href = dataUrl;

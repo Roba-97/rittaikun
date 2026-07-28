@@ -38,7 +38,7 @@
   transform: translateX(-50%);
 }
 
-.btn-gallery, .btn-create {
+#buttons > a, #buttons > button {
   background-color: rgba(0, 0, 0, 0.5);
   color: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.35);
@@ -47,7 +47,7 @@
   letter-spacing: 2px;
   transition: all 0.3s ease;
 }
-.btn-gallery:hover, .btn-create:hover {
+#buttons > a:hover, #buttons > button:hover {
   background-color: rgba(255, 255, 255, 0.8);
   color: #000000;
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.6);

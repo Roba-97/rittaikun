@@ -165,12 +165,11 @@ async function getScreenShot() {
     height: captureHeight,
     backgroundColor: null
   });
-
-	const dataUrl = canvas.toDataURL('/image/png');
-	const downloadLink = document.createElement('a');
+	
+  const dataUrl = canvas.toDataURL('/image/png');
+  const downloadLink = document.createElement('a');
   downloadLink.href = dataUrl;
   downloadLink.download = 'my-3d-model.png'; // ダウンロードされるファイル名
-
   downloadLink.click();
   console.log('save model!!')
 }

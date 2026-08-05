@@ -29,6 +29,7 @@
   /* ボタン自体も少しぼかす */
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
+  font-size: clamp(0.9rem, 3vw, 1.25rem) !important;
   letter-spacing: 2px;
   transition: all 0.3s ease;
 }
@@ -40,9 +41,27 @@
 
 /* 縦長い冊子（パンフレット）風のモーダル制御 */
 .custom-brochure-modal {
-  max-width: 38vw;
-  max-height: 75vh;
+  /* 【スマホ〜タブレット】画面幅の90%を使いつつ、小さくなりすぎないよう下限(300px)と上限(500px)を設定 */
+  width: 90%;
+  min-width: 300px;
+  max-width: 500px;
+  /* 中央揃えを確実に維持 */
+  margin-left: auto;
+  margin-right: auto;
   scrollbar-gutter: stable both-edges;
+}
+
+/* モーダルの高さ制限（modal-dialog-scrollableとの併用） */
+.custom-brochure-modal .modal-content {
+  max-height: 80vh;
+}
+
+/* 【PC（タブレット横〜PC画面：992px以上）】パンフレットらしい縦長比率にする */
+@media (min-width: 992px) {
+  .custom-brochure-modal {
+    width: 40vw;
+    max-width: 600px;
+  }
 }
 
 /* 文字間隔を広げて高級感を出すためのクラス */

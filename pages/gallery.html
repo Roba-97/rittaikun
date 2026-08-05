@@ -5,20 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>立体くん - ギャラリールーム</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="../css/gallery.css">
 </head>
 <body>
   <div class="container-fluid p-0 bg-body">
-    <header class="mb-5 p-5 glass-panel">
+    <!-- <header class="mb-5 p-5 glass-panel">
       <div class="container d-flex flex-row justify-content-between align-items-center">
         <h1 class="mb-0 display-5 fw-bold text-white">Gallery Room</h1>
-        <div class="d-flex gap-3">
-          <a href="create.html" class="btn btn-create py-3 px-4 rounded-pill">作品製作体験に参加</a>
-          <a href="/index.html" class="btn btn-entrance py-3 px-4 rounded-pill">エントランスに戻る</a>
-        </div>
       </div>
-    </header>
-    <div class="container mb-5 p-0">
+    </header> -->
+    <div class="container mb-5 px-0 py-3">
+      <!-- custom dropup button -->
+      <div class="dropup dropend-md-custom mb-3">
+        <button type="button" class="btn btn-dropend rounded-circle" style="width: 60px; height: 60px;" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-chevron-down d-md-none"></i>
+          <i class="bi bi-chevron-right d-none d-md-inline"></i>
+        </button>
+        <nav class="dropdown-menu bg-transparent shadow-none border-0 p-0">
+          <div class="d-flex flex-column flex-md-row gap-2">
+            <a href="create.html" class="btn btn-dropend py-3 px-4 rounded-pill">作品製作体験に参加</a>
+            <a href="/index.html" class="btn btn-dropend py-3 px-4 rounded-pill">エントランスに戻る</a>
+          </div>
+        </nav>
+      </div>
+
+      <!-- gallery items -->
       <div id="gallery-container" class="row row-cols-1 row-cols-md-2 g-5"></div>
       <div id="loading-sentinel"><div id="loading-spinner"></div></div>
     </div>

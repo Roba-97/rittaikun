@@ -10,6 +10,42 @@
   overflow-y: scroll;
 }
 
+/* dropdown-menu */
+.btn-dropend {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+}
+.btn-dropend:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #6366f1;
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.6);
+}
+.btn-dropend:focus {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #6366f1;
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.6);
+}
+
+/* PC・タブレットサイズ（768px以上）の時に右展開（dropend）へ切り替える */
+@media (min-width: 768px) {
+  .dropend-md-custom.dropup .dropdown-menu {
+    top: 0 !important;
+    bottom: auto !important;
+    left: 60px !important;
+    right: auto !important;
+    margin-left: 0.5rem !important;
+    margin-top: 0 !important;
+    transform: none !important;
+  }
+}
+
 .glass-panel {
   /* ほんのわずかな黒 */
   background-color: rgba(0, 0, 0, 0.4);
@@ -19,21 +55,6 @@
   backdrop-filter: blur(8px);
   /* 境界を際立たせる極細の白い枠 */
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.btn-create , .btn-entrance {
-  background-color: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  letter-spacing: 2px;
-  transition: all 0.3s ease;
-}
-.btn-create:hover, .btn-entrance:hover {
-  background-color: rgba(255, 255, 255, 0.8);
-  color: #000000;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.6);
 }
 
 .preview-glass-panel {
@@ -49,7 +70,6 @@
 
 /* style.css等 */
 #loading-sentinel {
-  height: 50px;
-  /* 0pxではなく高さを確保する */
+  height: 50px;  /* 高さを明示的に確保 */
   width: 100%;
 }

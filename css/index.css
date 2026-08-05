@@ -29,6 +29,7 @@
   /* ボタン自体も少しぼかす */
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
+  font-size: clamp(0.9rem, 3vw, 1.25rem) !important;
   letter-spacing: 2px;
   transition: all 0.3s ease;
 }

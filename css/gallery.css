@@ -18,6 +18,7 @@
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   letter-spacing: 2px;
+  text-wrap: nowrap;
   transition: all 0.3s ease;
 }
 .btn-dropend:hover {
@@ -44,6 +45,41 @@
     margin-top: 0 !important;
     transform: none !important;
   }
+}
+
+/* =========================================
+  ボタングループ用 グラスモーフィズムスタイル
+========================================= */
+/* 通常時 */
+.btn-glass-radio {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+
+/* ホバー時（マウスが乗ったとき） */
+.btn-glass-radio:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #6366f1;
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.6);
+  /* 影や枠線が隣のボタンに隠れないように手前に出す */
+  z-index: 1;
+}
+
+/* 選択中（ラジオボタンがONになっているとき） */
+/* ※ .btn-check が checked の時の、すぐ後ろにあるラベル（+ .btn-glass-radio）に適用 */
+.btn-check:checked+.btn-glass-radio {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #6366f1;
+  border-color: rgba(99, 102, 241, 0.8);
+  /* ホバーの光に加えて、内側に少し影(inset)を入れて「押し込まれている感」を出す */
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.1), 0 0 15px rgba(99, 102, 241, 0.6);
+  z-index: 2;
+  /* 選択中のボタンは常に最前面にする */
 }
 
 .glass-panel {

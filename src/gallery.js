@@ -7,7 +7,7 @@ const loadingSpinner = document.getElementById('loading-spinner');
 
 // 取得状態を管理する変数
 let currentIndex = 0;
-const fetchCount = 4;
+const fetchCount = 6;
 let isLoading = false; // 重複して通信しないためのロック用フラグ
 let hasMoreData = true; // まだDBにデータが残っているかのフラグ
 
